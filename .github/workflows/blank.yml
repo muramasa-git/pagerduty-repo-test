@@ -1,5 +1,0 @@
-- name: Send event to PagerDuty
-  uses: ACyphus/pagerduty-send-event@v1
-  with:
-    integration-key: ${{ secrets.PAGERDUTY_INTEGRATION_KEY }}
-    dedup-key: ${{ github.run_id }}
