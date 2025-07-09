@@ -1,4 +1,4 @@
-name: GCPM GitHub Issue Alert
+name: GitHub Issue and Pagerduty Integration
 
 on:
   issues:
@@ -6,20 +6,21 @@ on:
 
 env:
   ISSUE_URL: ${{ github.event.issue.html_url }}
-  ISSUE_ID: ${{ github.event.issue.number }}
+  ISSUE_NUM: ${{ github.event.issue.number }}
   TITLE: ${{ github.event.issue.title }}
+  REPO: ${{ github.repository}}
 
 jobs:
-  trigger-pagerduty:
+  create-pagerduty-incident:
     runs-on: ubuntu-latest
     steps:
-      - name: Create Pagerduty Incident
+      - name: Send Alert Event
         uses: ACyphus/pagerduty-send-event@v1
         with:
           integration-key: ${{ secrets.PAGERDUTY_INTEGRATION_KEY }}
           event-action: trigger
-          summary: '[Title]: ${{ env.TITLE }}'
-          source: 'GitHub Actions in ${{ github.repository }}'
+          summary: '#${{ env.ISSUE_NUM }} ${{ env.TITLE }}'
+          source: 'GitHub Action in ${{ env.REPO }}'
           severity: critical
-          client: '${{ github.respository}}#${{ env.ISSUE_ID }}'
+          client: '${{ env.REPO }} #${{ env.ISSUE_NUM }}'
           client-url: ${{ env.ISSUE_URL }}
