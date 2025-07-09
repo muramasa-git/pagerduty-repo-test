@@ -4,12 +4,6 @@ on:
   issues:
     types: [opened, reopened]
 
-env:
-  ISSUE_URL: ${{ github.event.issue.html_url }}
-  ISSUE_NUM: ${{ github.event.issue.number }}
-  TITLE: ${{ github.event.issue.title }}
-  REPO: ${{ github.repository}}
-
 jobs:
   create-pagerduty-incident:
     runs-on: ubuntu-latest
@@ -19,8 +13,8 @@ jobs:
         with:
           integration-key: ${{ secrets.PAGERDUTY_INTEGRATION_KEY }}
           event-action: trigger
-          summary: '#${{ env.ISSUE_NUM }} ${{ env.TITLE }}'
-          source: 'GitHub Action in ${{ env.REPO }}'
+          summary: '#${{ github.event.issue.number }} ${{ github.event.issue.title }}'
+          source: 'GitHub Action in ${{ github.repository}}'
           severity: critical
-          client: '${{ env.REPO }} #${{ env.ISSUE_NUM }}'
-          client-url: ${{ env.ISSUE_URL }}
+          client: 'GCPM GitHub Issue Ticket'
+          client-url: ${{ github.event.issue.html_url }}
